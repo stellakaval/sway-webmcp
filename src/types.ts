@@ -1,7 +1,9 @@
 export type OccasionId='wedding'|'birthday'|'festival';
 export type ModuleKind='fashion'|'beauty'|'hotel'|'venue';
 export type Quad='tl'|'tr'|'bl'|'br';
-export interface Candidate{id:string;occasion:OccasionId;kind:ModuleKind;name:string;price:number;image:string;quad:Quad;attributes:Record<string,string|number|boolean>;sourceLabel:string;description:string}
+export type ShoppingCategory='outfit'|'beauty'|'hotel';
+export interface ShoppingIntent{category:ShoppingCategory;query:string;budget:number;size?:string;color?:string;location?:string;mustHave?:string}
+export interface Candidate{id:string;occasion:OccasionId;kind:ModuleKind;name:string;price:number;image:string;quad:Quad;attributes:Record<string,string|number|boolean>;sourceLabel:string;description:string;sourceUrl?:string;live?:boolean}
 export interface Module{id:string;kind:ModuleKind;label:string;question:string;dimension:string;candidateIds:string[]}
 export interface Template{id:OccasionId;title:string;eyebrow:string;location:string;date:string;budget:number;vibe:string;accent:string;modules:Module[];prompt:string}
 export interface Vote{id:string;moduleId:string;candidateId:string;role:'shopper'|'friend';participantId:string;changedAfterContext:boolean}
@@ -9,4 +11,4 @@ export interface Insight{id:string;scope:string;statement:string;evidenceVoteIds
 export interface ConstraintCheck{constraint:string;status:'meets'|'tradeoff'|'fails'|'unknown';evidence:string}
 export interface Assessment{candidateId:string;score:number;checks:ConstraintCheck[]}
 export interface Activity{id:string;actor:'you'|'friend'|'agent';text:string;time:number;undo?:{type:string;id:string}}
-export interface BoardState{occasionId:OccasionId;brief:{location:string;date:string;budget:number;vibe:string};activeModule:number;votes:Vote[];friendVotes:Vote[];reactions:Record<string,string>;contextRevealed:string[];insights:Insight[];assessments:Assessment[];winners:Record<string,string>;weights:{you:number;friends:number;fit:number};activity:Activity[];editBuilt:boolean;approved:boolean}
+export interface BoardState{occasionId:OccasionId;brief:{location:string;date:string;budget:number;vibe:string};activeModule:number;votes:Vote[];friendVotes:Vote[];reactions:Record<string,string>;contextRevealed:string[];insights:Insight[];assessments:Assessment[];winners:Record<string,string>;weights:{you:number;friends:number;fit:number};activity:Activity[];editBuilt:boolean;approved:boolean;intent?:ShoppingIntent;customCandidates:Candidate[];comparisonQueue:Array<[string,string]>;comparisonIndex:number;preferenceScores:Record<string,number>;shortlist:string[]}

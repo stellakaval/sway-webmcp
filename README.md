@@ -10,7 +10,9 @@ Sway is a human-in-the-loop decision layer for occasion shopping. A browser agen
 - **Wedding Weekend** — outfit, beauty look, and hotel
 - **Festival Weekend** — outfit, durable beauty look, and lodging
 
-Every demo works without an account or WebMCP. State is kept in local storage for the deterministic challenge demo. The optional Supabase migration in `supabase/migrations` defines anonymous-auth persistence, Realtime tables, and role-scoped RLS for cross-device sharing.
+The primary experience is a user-created shopping search: choose outfit, beauty, or hotel; set a few practical guardrails; optionally describe the item in one sentence; then make fast visual choices until Sway produces a human-ranked top three. The original occasion boards remain available as sample stories.
+
+Without WebMCP, Sway uses its starter pool. With WebMCP, a browser agent can read the live shopping intent, research current products, and add 4–8 real candidates—with price, image, retailer, and direct product URL—to the same pairwise flow.
 
 ## Run and verify
 
@@ -24,6 +26,12 @@ npm run build
 
 Open the shown local URL in Chrome with WebMCP enabled or in ChatGPT's in-app browser.
 
+## Supabase persistence
+
+Copy `.env.example` to `.env.local`, then provide the project URL and publishable anonymous key. Apply both migrations in `supabase/migrations` and enable anonymous sign-ins in Supabase Auth. Sway signs in anonymously and persists the complete live board state automatically; without credentials it remains fully usable with local persistence.
+
+For GitHub Pages, configure repository variable `VITE_SUPABASE_URL` and repository secret `VITE_SUPABASE_ANON_KEY`. The deployment workflow injects them only at build time. Never use a service-role key in the browser.
+
 ## WebMCP tools
 
 Sway registers nine imperative tools through `document.modelContext.registerTool(...)`:
@@ -32,7 +40,7 @@ Sway registers nine imperative tools through `document.modelContext.registerTool
 - `get_item_details`, `add_candidates`, `present_comparison`
 - `assess_constraints`, `propose_insight`, `build_sway_edit`
 
-The tools reuse the same functions as the human UI. Read tools are annotated; catalog/social content is treated as untrusted; inputs are allow-listed and length-bounded. Agent mutations appear in the activity feed. Agents cannot vote, react, accept insights, approve winners, purchase, book, post, or share.
+`add_candidates` accepts live product records rather than fixed demo IDs. The tools reuse the same functions as the human UI. Read tools are annotated; retailer/social content is treated as untrusted; URLs, inputs, counts, and lengths are validated. Agent mutations appear in the activity feed. Agents cannot vote, react, accept insights, approve winners, purchase, book, post, or share.
 
 Suggested prompt:
 

@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {addAssessment,newBoard,proposeInsight,swayScore,vote} from '../src/decision-engine';
+import {addAssessment,chooseShoppingCandidate,newBoard,proposeInsight,startShopping,swayScore,vote} from '../src/decision-engine';
 
 describe('shared decision engine',()=>{
   it('keeps aesthetic choice with the shopper',()=>{
@@ -21,5 +21,12 @@ describe('shared decision engine',()=>{
     const twice=vote(once,'birthday-beauty','berry-statement');
     const next=proposeInsight(twice,'You may prefer one clear statement.','occasion',twice.votes.map(v=>v.id));
     expect(next.insights[0].status).toBe('pending');
+  });
+  it('turns guided visual choices into a top-three shortlist',()=>{
+    let state=startShopping(newBoard(),{category:'outfit',query:'a dress for dinner',budget:300,size:'M'});
+    expect(state.comparisonQueue.length).toBeGreaterThanOrEqual(3);
+    while(state.comparisonIndex<state.comparisonQueue.length){state=chooseShoppingCandidate(state,state.comparisonQueue[state.comparisonIndex][0])}
+    expect(state.shortlist).toHaveLength(3);
+    expect(state.preferenceScores[state.shortlist[0]]).toBeGreaterThan(0);
   });
 });
