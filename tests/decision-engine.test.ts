@@ -29,4 +29,11 @@ describe('shared decision engine',()=>{
     expect(state.shortlist).toHaveLength(3);
     expect(state.preferenceScores[state.shortlist[0]]).toBeGreaterThan(0);
   });
+  it('attributes a chat-started search to the agent without making a choice',()=>{
+    const state=startShopping(newBoard(),{category:'beauty',query:'a glossy lip',budget:40},'agent');
+    expect(state.intent?.category).toBe('beauty');
+    expect(state.activity.at(-1)?.actor).toBe('agent');
+    expect(state.votes).toHaveLength(0);
+    expect(state.shortlist).toHaveLength(0);
+  });
 });
