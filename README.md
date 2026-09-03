@@ -1,18 +1,20 @@
 # Sway
 
-**AI can find it. Only you can feel it.**
+**AI searches. You choose.**
 
-Sway is a human-in-the-loop decision layer for occasion shopping. A browser agent organizes candidates and checks practical constraints; the shopper and trusted friends supply every aesthetic signal and the shopper approves the final edit.
+Sway is a human-in-the-loop product-shopping experience. A ChatGPT browser agent searches current retailer pages, records its source trail, and checks practical constraints; the shopper supplies every aesthetic signal and approves the final pick.
 
-## Working demos
+The experience is intentionally shopping-only: choose outfit or beauty, set practical guardrails, optionally describe the item in one sentence, then make fast visual choices until Sway produces a human-ranked top three.
 
-- **Birthday Night Out** — outfit, beauty look, and venue (flagship)
-- **Wedding Weekend** — outfit, beauty look, and hotel
-- **Festival Weekend** — outfit, durable beauty look, and lodging
+Without WebMCP, Sway uses its starter pool. With WebMCP, ChatGPT reads the live intent, searches at least three current retailer pages, records used and rejected sources, and adds 4–8 verified candidates—with price, availability, image, retailer, and direct URL—to the same pairwise flow.
 
-The primary experience is a user-created shopping search: choose outfit, beauty, or hotel; set a few practical guardrails; optionally describe the item in one sentence; then make fast visual choices until Sway produces a human-ranked top three. The original occasion boards remain available as sample stories.
+## Judge demo: chat and page working together
 
-Without WebMCP, Sway uses its starter pool. With WebMCP, a browser agent can read the live shopping intent, research current products, and add 4–8 real candidates—with price, image, retailer, and direct product URL—to the same pairwise flow.
+Open the deployed site inside ChatGPT's in-app browser. Then type:
+
+> Help me find a red birthday dress under $200 in size M. Search at least three real retailers, show the research trail in Sway, and let me decide through visual comparisons. After two choices, read my votes and add one matchup that tests what is still unclear. Do not choose or purchase for me.
+
+ChatGPT should call `start_shopping`, browse retailer pages, call `record_research`, and call `add_candidates`. The human then clicks two visual choices on the page and tells ChatGPT **“I made two choices—continue from my votes.”** ChatGPT calls `get_board_state`, explains the observed tradeoff, and may call `present_comparison`. See [AGENT_DEMO_TASK.md](AGENT_DEMO_TASK.md) for the deterministic task contract.
 
 ## Run and verify
 
@@ -34,17 +36,15 @@ For GitHub Pages, configure repository variable `VITE_SUPABASE_URL` and reposito
 
 ## WebMCP tools
 
-Sway registers nine imperative tools through `document.modelContext.registerTool(...)`:
+Sway registers eleven imperative tools through `document.modelContext.registerTool(...)`:
 
-- `get_board_state`, `update_brief`, `search_catalog`
+- `get_board_state`, `start_shopping`, `record_research`, `update_brief`, `search_catalog`
 - `get_item_details`, `add_candidates`, `present_comparison`
 - `assess_constraints`, `propose_insight`, `build_sway_edit`
 
 `add_candidates` accepts live product records rather than fixed demo IDs. The tools reuse the same functions as the human UI. Read tools are annotated; retailer/social content is treated as untrusted; URLs, inputs, counts, and lengths are validated. Agent mutations appear in the activity feed. Agents cannot vote, react, accept insights, approve winners, purchase, book, post, or share.
 
-Suggested prompt:
-
-> Organize my birthday options, check the practical plan, and show me the most useful next comparison. Do not choose my style for me.
+The `add_candidates` tool rejects unverified workflows until three retailer pages appear in the visible research trail.
 
 ## Architecture
 
@@ -59,8 +59,8 @@ No model API or secret is embedded in the client. Generated demo art is original
 
 ## Judging fit
 
-- **WebMCP leverage:** nine non-trivial tools act on live, visible state.
-- **Execution:** three responsive occasion flows reach a shopper-approved final edit.
+- **WebMCP leverage:** eleven non-trivial tools coordinate external research and live human interaction through shared visible state.
+- **Execution:** outfit and beauty searches reach a shopper-approved top three.
 - **Potential impact:** replaces tabs, screenshots, and scattered group-chat feedback with a structured choice loop.
 - **Creativity & ambition:** taste remains a transparent human signal instead of an opaque AI score.
 
