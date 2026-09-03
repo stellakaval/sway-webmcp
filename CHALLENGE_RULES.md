@@ -26,13 +26,13 @@ The project must:
 
 How thoroughly and skillfully does the project use WebMCP? Does its code reflect genuine effort and a working, non-trivial implementation?
 
-For Sway, this means agents must operate on the same visible candidate pool, comparisons, taste insights, and shortlist as the user. Tool schemas must be precise, calls must be reliable, and the demonstrated workflow must be materially better than brittle UI automation.
+For Sway, this means agents must research live retailer pages and operate on the same visible source trail, candidate pool, comparisons, taste insights, and shortlist as the user. Tool schemas must be precise, calls must be reliable, and the demonstrated workflow must be materially better than brittle UI automation.
 
 ### 2. Execution — 25%
 
 Does the project deliver a working, coherent product experience rather than a technical proof of concept?
 
-For Sway, the travel workflow must work end to end, feel polished on mobile and desktop, communicate agent actions clearly, and preserve human review for consequential actions.
+For Sway, the live shopping workflow must work end to end, feel polished on mobile and desktop, communicate agent research clearly, and preserve human review for consequential actions.
 
 ### 3. Potential Impact — 25%
 
@@ -81,7 +81,8 @@ Judges are not required to build or test the app. The description, images, repos
 
 - [ ] A browser agent can discover and successfully invoke non-trivial Sway tools.
 - [ ] Agent calls visibly update the same comparison state used by the human UI.
-- [ ] The hotel-selection workflow works end to end.
+- [ ] The live product-shopping workflow works end to end across at least three retailer pages.
+- [ ] Researched, used, and rejected retailer sources are visible and link to the pages checked.
 - [ ] Taste inferences cite observable choices and can be accepted, corrected, or reset.
 - [ ] Purchase, booking, sharing, deletion, and other consequential actions remain human-controlled.
 - [ ] The app is polished, accessible, responsive, and understandable without narration.
