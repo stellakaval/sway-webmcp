@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {addAssessment,addLiveCandidates,chooseShoppingCandidate,newBoard,proposeInsight,startShopping,swayScore,vote} from '../src/decision-engine';
+import {addAssessment,addLiveCandidates,chooseShoppingCandidate,newBoard,presentAgentComparison,proposeInsight,startShopping,swayScore,vote} from '../src/decision-engine';
 
 describe('shared decision engine',()=>{
   it('keeps aesthetic choice with the shopper',()=>{
@@ -27,9 +27,16 @@ describe('shared decision engine',()=>{
     const products=['one','two','three','four'].map((id,i)=>({id,occasion:'birthday' as const,kind:'fashion' as const,name:id,price:100+i,image:`https://example.com/${id}.jpg`,quad:'tl' as const,attributes:{availability:'in stock'},sourceLabel:'Live shop',description:'A live product.',sourceUrl:`https://example.com/${id}`,live:true}));
     state=addLiveCandidates(state,products);
     expect(state.comparisonQueue.length).toBeGreaterThanOrEqual(3);
+    state=chooseShoppingCandidate(state,state.comparisonQueue[0][0]);
+    state=chooseShoppingCandidate(state,state.comparisonQueue[1][0]);
+    expect(state.awaitingAgent).toBe(true);
+    expect(()=>chooseShoppingCandidate(state,state.comparisonQueue[2][0])).toThrow(/agent/i);
+    state=presentAgentComparison(state,'one','three','minimal versus expressive','The first two votes split on visual intensity.');
+    expect(state.agentComparison?.status).toBe('pending');
     while(state.comparisonIndex<state.comparisonQueue.length){state=chooseShoppingCandidate(state,state.comparisonQueue[state.comparisonIndex][0])}
     expect(state.shortlist).toHaveLength(3);
     expect(state.preferenceScores[state.shortlist[0]]).toBeGreaterThan(0);
+    expect(state.agentComparison?.status).toBe('completed');
   });
   it('attributes a chat-started search to the agent without making a choice',()=>{
     const state=startShopping(newBoard(),{category:'beauty',query:'a glossy lip',budget:40},'agent');
