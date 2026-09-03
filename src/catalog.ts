@@ -1,5 +1,5 @@
 import type {Candidate,OccasionId,Template} from './types';
-const F='/assets/fashion-grid.png' as const,B='/assets/beauty-grid.png' as const,P='/assets/places-grid.png' as const;
+const BASE=import.meta.env.BASE_URL;const F=`${BASE}assets/fashion-grid.png`,B=`${BASE}assets/beauty-grid.png`,P=`${BASE}assets/places-grid.png`;
 export const candidates:Candidate[]=[
 {id:'berry-slip',occasion:'wedding',kind:'fashion',name:'Berry Hour',price:168,image:F,quad:'tl',attributes:{dressCode:'cocktail',weather:'warm',palette:'berry'},sourceLabel:'Atelier Edit',description:'Fluid satin, soft drape, dance-floor ready.'},{id:'sage-sculpt',occasion:'wedding',kind:'fashion',name:'Sage Structure',price:184,image:F,quad:'tr',attributes:{dressCode:'cocktail',weather:'mild',palette:'sage'},sourceLabel:'Form Studio',description:'Sculptural shoulder, polished and unexpected.'},
 {id:'silver-mini',occasion:'birthday',kind:'fashion',name:'Silver Signal',price:142,image:F,quad:'bl',attributes:{dressCode:'nightlife',weather:'indoor',palette:'silver'},sourceLabel:'After Dark',description:'Sharp tailoring with full birthday energy.'},{id:'berry-bday',occasion:'birthday',kind:'fashion',name:'Afterglow Satin',price:168,image:F,quad:'tl',attributes:{dressCode:'dinner',weather:'indoor',palette:'berry'},sourceLabel:'Atelier Edit',description:'Romantic, fluid, and easy to style.'},
