@@ -1,48 +1,59 @@
 # Sway
 
-**Find what moves you.**
+**AI can find it. Only you can feel it.**
 
-Sway is a visual decision app where people teach an AI their taste through quick, low-pressure “this or that” choices. The agent turns those choices into better candidates, an explainable taste profile, and a useful shortlist.
+Sway is a human-in-the-loop decision layer for occasion shopping. A browser agent organizes candidates and checks practical constraints; the shopper and trusted friends supply every aesthetic signal and the shopper approves the final edit.
 
-Built for the [OpenAI WebMCP Challenge](https://openai.com/webmcp-challenge/).
+## Working demos
 
-## The idea
+- **Birthday Night Out** — outfit, beauty look, and venue (flagship)
+- **Wedding Weekend** — outfit, beauty look, and hotel
+- **Festival Weekend** — outfit, durable beauty look, and lodging
 
-Wishbone made expressing an opinion effortless: tap one of two images and immediately see how everyone else voted. Sway evolves that loop from entertainment into a useful decision tool.
+Every demo works without an account or WebMCP. State is kept in local storage for the deterministic challenge demo. The optional Supabase migration in `supabase/migrations` defines anonymous-auth persistence, Realtime tables, and role-scoped RLS for cross-device sharing.
 
-1. Pick a category and goal.
-2. An agent assembles relevant candidates.
-3. Choose visually between two options at a time.
-4. Reveal social sentiment and practical details.
-5. Let the agent learn what drives your taste.
-6. Review an evidence-backed shortlist and make the final call.
+## Run and verify
 
-The human supplies visual judgment. The agent handles search, organization, comparison, and synthesis. Both act on the same visible workspace.
+```bash
+npm install
+npm run dev
+npm run lint
+npm test
+npm run build
+```
 
-## Initial category
+Open the shown local URL in Chrome with WebMCP enabled or in ChatGPT's in-app browser.
 
-The challenge MVP will focus deeply on **travel**, using hotel selection as the complete demonstration workflow. Fashion, beauty, home, food, and gifts are designed as future category packs.
+## WebMCP tools
 
-## Core WebMCP tools
+Sway registers nine imperative tools through `document.modelContext.registerTool(...)`:
 
-- `understand_session` — read the goal, constraints, candidates, choices, and current taste profile.
-- `add_candidates` — add relevant options to the visible comparison pool.
-- `create_comparison` — present a pairing chosen to resolve a specific preference uncertainty.
-- `record_context` — add budget, occasion, destination, or other practical constraints.
-- `propose_taste_insight` — show an evidence-backed preference for the user to accept or correct.
-- `create_shortlist` — turn comparison history into visible finalists.
-- `recommend_finalist` — explain the best match and its strongest alternative.
+- `get_board_state`, `update_brief`, `search_catalog`
+- `get_item_details`, `add_candidates`, `present_comparison`
+- `assess_constraints`, `propose_insight`, `build_sway_edit`
 
-## Repository source of truth
+The tools reuse the same functions as the human UI. Read tools are annotated; catalog/social content is treated as untrusted; inputs are allow-listed and length-bounded. Agent mutations appear in the activity feed. Agents cannot vote, react, accept insights, approve winners, purchase, book, post, or share.
 
-- [`CHALLENGE_RULES.md`](./CHALLENGE_RULES.md) — grading, compliance, and submission requirements.
-- [`PRODUCT_BRIEF.md`](./PRODUCT_BRIEF.md) — product vision, audience, interaction loop, and MVP.
-- [`AGENTS.md`](./AGENTS.md) — durable implementation guidance for Codex and contributors.
+Suggested prompt:
 
-## Status
+> Organize my birthday options, check the practical plan, and show me the most useful next comparison. Do not choose my style for me.
 
-Product definition and challenge plan are complete. Implementation is the next milestone.
+## Architecture
 
-## License
+- `src/decision-engine.ts` — shared transitions and practical scoring
+- `src/App.tsx` — accessible React UI and human actions
+- `src/webmcp.ts` — tool registration, schemas, validation, and authority boundaries
+- `src/catalog.ts` — deterministic original demo catalog
+- `supabase/migrations` — optional production sharing schema and RLS
+- `CHALLENGE_RULES.md` — canonical grading and compliance checklist
 
-MIT
+No model API or secret is embedded in the client. Generated demo art is original and stored in `public/assets`.
+
+## Judging fit
+
+- **WebMCP leverage:** nine non-trivial tools act on live, visible state.
+- **Execution:** three responsive occasion flows reach a shopper-approved final edit.
+- **Potential impact:** replaces tabs, screenshots, and scattered group-chat feedback with a structured choice loop.
+- **Creativity & ambition:** taste remains a transparent human signal instead of an opaque AI score.
+
+See [CHALLENGE_RULES.md](CHALLENGE_RULES.md) for the complete checklist and controlling links.

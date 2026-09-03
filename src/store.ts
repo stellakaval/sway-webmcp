@@ -1,0 +1,2 @@
+import {useEffect,useState} from 'react'; import {newBoard} from './decision-engine'; import type {BoardState} from './types';
+const KEY='sway-board-v1'; export function useBoard(){const [state,setState]=useState<BoardState>(()=>{try{const x=localStorage.getItem(KEY);return x?JSON.parse(x):newBoard()}catch{return newBoard()}});useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(state));window.dispatchEvent(new CustomEvent('sway:state',{detail:state}))},[state]);return[state,setState] as const}
