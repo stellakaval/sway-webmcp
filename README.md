@@ -36,9 +36,9 @@ For GitHub Pages, configure repository variable `VITE_SUPABASE_URL` and reposito
 
 ## WebMCP tools
 
-Sway registers eleven imperative tools through `document.modelContext.registerTool(...)`:
+Sway registers nine focused tools through `document.modelContext.registerTool(...)`:
 
-- `get_board_state`, `start_shopping`, `record_research`, `update_brief`, `search_catalog`
+- `get_board_state`, `start_shopping`, `record_research`
 - `get_item_details`, `add_candidates`, `present_comparison`
 - `assess_constraints`, `propose_insight`, `build_sway_edit`
 
