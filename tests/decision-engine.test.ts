@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {addAssessment,chooseShoppingCandidate,newBoard,proposeInsight,startShopping,swayScore,vote} from '../src/decision-engine';
+import {addAssessment,addLiveCandidates,chooseShoppingCandidate,newBoard,proposeInsight,startShopping,swayScore,vote} from '../src/decision-engine';
 
 describe('shared decision engine',()=>{
   it('keeps aesthetic choice with the shopper',()=>{
@@ -22,8 +22,10 @@ describe('shared decision engine',()=>{
     const next=proposeInsight(twice,'You may prefer one clear statement.','occasion',twice.votes.map(v=>v.id));
     expect(next.insights[0].status).toBe('pending');
   });
-  it('turns guided visual choices into a top-three shortlist',()=>{
+  it('turns live guided visual choices into a top-three shortlist',()=>{
     let state=startShopping(newBoard(),{category:'outfit',query:'a dress for dinner',budget:300,size:'M'});
+    const products=['one','two','three','four'].map((id,i)=>({id,occasion:'birthday' as const,kind:'fashion' as const,name:id,price:100+i,image:`https://example.com/${id}.jpg`,quad:'tl' as const,attributes:{availability:'in stock'},sourceLabel:'Live shop',description:'A live product.',sourceUrl:`https://example.com/${id}`,live:true}));
+    state=addLiveCandidates(state,products);
     expect(state.comparisonQueue.length).toBeGreaterThanOrEqual(3);
     while(state.comparisonIndex<state.comparisonQueue.length){state=chooseShoppingCandidate(state,state.comparisonQueue[state.comparisonIndex][0])}
     expect(state.shortlist).toHaveLength(3);
@@ -35,5 +37,6 @@ describe('shared decision engine',()=>{
     expect(state.activity.at(-1)?.actor).toBe('agent');
     expect(state.votes).toHaveLength(0);
     expect(state.shortlist).toHaveLength(0);
+    expect(state.comparisonQueue).toHaveLength(0);
   });
 });
